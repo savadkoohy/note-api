@@ -1,0 +1,173 @@
+{% comment %} <!DOCTYPE html>
+<html lang="en" x-data="appData()" x-init="init()">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Notes App</title>
+
+  <!-- بارگذاری فایل CSS استاتیک -->
+  {% load static %}
+  <link href="{% static 'css/style.css' %}" rel="stylesheet" />
+
+  <!-- TailwindCSS -->
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+
+</head>
+<body class="bg-gray-100 p-6">
+  {% include 'partials/navbar.html' %}
+
+  <div class="mb-6">
+    <h2 class="text-lg font-semibold text-gray-700 mb-2">✏️ افزودن یادداشت جدید</h2>
+    <div class="bg-white rounded-lg shadow p-4">
+      <div class="mb-3">
+        <input
+          type="text"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md"
+          placeholder="عنوان یادداشت"
+          x-model="newNote.title"
+        />
+      </div>
+      <div class="mb-3">
+        <textarea
+          class="w-full px-3 py-2 border border-gray-300 rounded-md"
+          rows="3"
+          placeholder="متن یادداشت"
+          x-model="newNote.content"
+        ></textarea>
+      </div>
+      <button
+        type="button"
+        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        @click="addNote"
+        >
+        افزودن یادداشت
+      </button>
+    </div>
+  </div>
+  
+
+  <div class="container mx-auto mt-6">
+    <h2 class="text-xl font-semibold text-gray-700 mb-4">📝 لیست یادداشت‌ها</h2>
+  
+    <template x-if="note.editing">
+      <div>
+        <input type="text" class="w-full border rounded p-2 mb-2" x-model="note.title">
+        <textarea class="w-full border rounded p-2 mb-2" rows="3" x-model="note.content"></textarea>
+        <button class="bg-green-600 text-white px-3 py-1 rounded mr-2" @click="saveNote(note)">ذخیره</button>
+        <button class="bg-gray-300 px-3 py-1 rounded" @click="note.editing = false">انصراف</button>
+      </div>
+    </template>
+  
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" x-show="notes.length > 0">
+      <template x-for="note in notes" :key="note.id">
+        <div class="bg-white rounded-lg shadow-md p-4">
+          <h3 class="text-lg font-bold text-gray-800" x-text="note.title"></h3>
+          <p class="text-gray-600 mt-2" x-text="note.content"></p>
+          <div class="mt-4 flex space-x-4">
+            <button class="text-sm text-blue-600 hover:underline" @click="note.editing = true">✏️ ویرایش</button>
+          <button class="text-sm text-red-600 hover:underline" @click="deleteNote(note.id)">🗑 حذف</button>
+          </div>
+        </div>
+      </template>
+    </div>
+  </div>
+  
+
+  {% include 'partials/footer.html' %}
+
+
+
+<!-- ابتدا فایل تعریف تابع -->
+<script src="{% static 'js/script.js' %}" defer></script>
+<!-- سپس بارگذاری Alpine -->
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+
+</body>
+</html> {% endcomment %}
+
+
+<!DOCTYPE html>
+<html lang="en" x-data="appData()" x-init="init()">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Notes App</title>
+
+  {% load static %}
+  <link href="{% static 'css/style.css' %}" rel="stylesheet" />
+
+  <!-- TailwindCSS -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-6">
+
+  {% include 'partials/navbar.html' %}
+
+  <!-- افزودن یادداشت جدید -->
+  <div class="mb-6">
+    <h2 class="text-lg font-semibold text-gray-700 mb-2">✏️ افزودن یادداشت جدید</h2>
+    <div class="bg-white rounded-lg shadow p-4">
+      <div class="mb-3">
+        <input
+          type="text"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md"
+          placeholder="عنوان یادداشت"
+          x-model="newNote.title"
+        />
+      </div>
+      <div class="mb-3">
+        <textarea
+          class="w-full px-3 py-2 border border-gray-300 rounded-md"
+          rows="3"
+          placeholder="متن یادداشت"
+          x-model="newNote.content"
+        ></textarea>
+      </div>
+      <button
+        type="button"
+        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        @click="addNote"
+      >
+        افزودن یادداشت
+      </button>
+    </div>
+  </div>
+
+  <!-- لیست یادداشت‌ها -->
+  <div class="container mx-auto mt-6">
+    <h2 class="text-xl font-semibold text-gray-700 mb-4">📝 لیست یادداشت‌ها</h2>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" x-show="notes.length > 0">
+      <template x-for="note in notes" :key="note.id">
+        <div class="bg-white rounded-lg shadow-md p-4">
+          <div x-show="note.editing" style="display: none;">
+            <input type="text" class="w-full border rounded p-2 mb-2" x-model="note.title">
+            <textarea class="w-full border rounded p-2 mb-2" rows="3" x-model="note.content"></textarea>
+            <button class="bg-green-600 text-white px-3 py-1 rounded mr-2" @click="saveNote(note)">ذخیره</button>
+            <button class="bg-gray-300 px-3 py-1 rounded" @click="note.editing = false">انصراف</button>
+          </div>
+      
+          <div x-show="!note.editing" style="display: none;">
+            <h3 class="text-lg font-bold text-gray-800" x-text="note.title"></h3>
+            <p class="text-gray-600 mt-2" x-text="note.content"></p>
+            <div class="mt-4 flex space-x-4">
+              <button class="text-sm text-blue-600 hover:underline" @click="note.editing = true">✏️ ویرایش</button>
+              <button class="text-sm text-red-600 hover:underline" @click="deleteNote(note.id)">🗑 حذف</button>
+            </div>
+          </div>
+        </div>
+      </template>
+      
+    </div>
+  </div>
+
+  {% include 'partials/footer.html' %}
+
+  <!-- فایل اسکریپت شما -->
+  <script src="{% static 'js/script.js' %}"></script>
+  <!-- بارگذاری AlpineJS -->
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+</body>
+</html>

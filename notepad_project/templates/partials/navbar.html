@@ -1,0 +1,26 @@
+
+<nav class="bg-white shadow-md">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+      <a href="#" class="text-xl font-bold text-gray-800">📝 NotesApp</a>
+      <div x-data="{ open: false }" class="relative">
+        <button @click="open = !open" class="text-gray-800 md:hidden">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+        <ul class="hidden md:flex space-x-6 text-gray-700">
+          <li><a href="#" class="hover:text-blue-600">خانه</a></li>
+          <li><a href="#" class="hover:text-blue-600">یادداشت‌ها</a></li>
+          <li><a href="#" class="hover:text-blue-600">ورود</a></li>
+        </ul>
+        <!-- موبایل منو -->
+        <div x-show="open" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-20 md:hidden">
+          <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">خانه</a>
+          <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">یادداشت‌ها</a>
+          <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">ورود</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+  
